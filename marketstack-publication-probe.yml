@@ -1,0 +1,51 @@
+name: Marketstack MV4 Publication Timing Probe
+
+on:
+  schedule:
+    # Singapore is UTC+8 year-round.
+    # Probe 17:30, 18:30, 19:30 and 20:30 SGT, Monday-Friday.
+    - cron: "30 9,10,11,12 * * 1-5"
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check calibration switch
+        id: switch
+        shell: bash
+        run: |
+          if [ "${{ vars.JARVIS_PROBE_ENABLED }}" = "1" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "JARVIS // Timing probe disabled. Set repository variable JARVIS_PROBE_ENABLED=1 to enable scheduled checks."
+          fi
+
+      - name: Checkout repository
+        if: steps.switch.outputs.enabled == 'true'
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        if: steps.switch.outputs.enabled == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        if: steps.switch.outputs.enabled == 'true'
+        run: pip install -r requirements.txt
+
+      - name: Probe Marketstack MV4.SI / XSES
+        if: steps.switch.outputs.enabled == 'true'
+        env:
+          MARKETSTACK_API_KEY: ${{ secrets.MARKETSTACK_API_KEY }}
+        run: python publication_probe.py
+
+      - name: Upload probe result
+        if: steps.switch.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mv4-publication-probe-${{ github.run_id }}-${{ github.run_attempt }}
+          path: probe_results/*.json
+          retention-days: 14
