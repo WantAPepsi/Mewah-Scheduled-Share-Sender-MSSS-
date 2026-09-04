@@ -1,0 +1,44 @@
+{
+  "report": {
+    "title": "Mewah Share Movement",
+    "sender_name": "Mewah Share Monitor",
+    "sender_email": "",
+    "to": [],
+    "cc": [],
+    "send_time": "18:30",
+    "timezone": "Asia/Singapore",
+    "weekday_only": true,
+    "require_current_trading_day": true,
+    "earliest_send_time": "17:15",
+    "history_rows": 40,
+    "send_no_new_row_notice": true
+  },
+  "stock": {
+    "name": "Mewah International Inc.",
+    "symbol": "MV4.SI",
+    "display_symbol": "MV4",
+    "exchange": "SGX",
+    "currency": "SGD",
+    "provider_symbol": "MV4.SI:XSES"
+  },
+  "data_source": {
+    "provider": "marketstack",
+    "label": "Marketstack end-of-day market data",
+    "marketstack_symbol": "MV4",
+    "marketstack_mic": "XSES",
+    "history_days": 220,
+    "production_note": "MARK X.1 timing calibration: cloud-safe MV4.SI/XSES probe. Fresh GitHub runners do not depend on local diagnostic state; every Marketstack EOD response is still filtered to MIC XSES before acceptance.",
+    "marketstack_resolved_symbol": "MV4.SI"
+  },
+  "remarks_rules": {
+    "volume_spike_multiplier": 2.5,
+    "volume_spike_minimum": 50000,
+    "large_close_move_percent": 5.0,
+    "large_intraday_move_percent": 5.0,
+    "low_volume_threshold": 50000,
+    "new_high_low_lookback": 20,
+    "show_zero_volume": true,
+    "show_dividend_events": true,
+    "annotate_low_volume_moves": true
+  }
+}
